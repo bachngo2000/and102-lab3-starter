@@ -15,6 +15,7 @@ import com.codepath.asynchttpclient.RequestParams
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
 import com.codepath.bestsellerlistapp.R
 import okhttp3.Headers
+import org.json.JSONObject
 
 // --------------------------------//
 // CHANGE THIS TO BE YOUR API KEY  //
@@ -77,7 +78,18 @@ class BestSellerBooksFragment : Fragment(), OnListFragmentInteractionListener {
                 // The wait for a response is over
                 progressBar.hide()
 
-                //TODO - Parse JSON into Models
+                Log.d("JSON response: ", json.toString())
+
+                // Parse JSON into Models
+                // take the JSON response and parse it into Kotlin objects that can be used by our app
+                // So our first task is to get the list "books" out from the rest of the response. To do this, we'll use a combination of .jsonObject and .get(key):
+
+                // Get the "results" json out of the response, as another JSONObject:
+                val resultsJSON : JSONObject = json.jsonObject.get("results") as JSONObject
+
+                // Filter the JSON response into a parsable string
+                // Get the "books" from those results, as a String
+                val booksRawJSON : String = resultsJSON.get("books").toString()
 
                 val models : List<BestSellerBook>? = null // Fix me!
                 recyclerView.adapter = models?.let { BestSellerBooksRecyclerViewAdapter(it, this@BestSellerBooksFragment) }
