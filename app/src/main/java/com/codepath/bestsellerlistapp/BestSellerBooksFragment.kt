@@ -14,6 +14,8 @@ import com.codepath.asynchttpclient.AsyncHttpClient
 import com.codepath.asynchttpclient.RequestParams
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
 import com.codepath.bestsellerlistapp.R
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import okhttp3.Headers
 import org.json.JSONObject
 
@@ -82,7 +84,8 @@ class BestSellerBooksFragment : Fragment(), OnListFragmentInteractionListener {
 
                 // Parse JSON into Models
                 // take the JSON response and parse it into Kotlin objects that can be used by our app
-                // So our first task is to get the list "books" out from the rest of the response. To do this, we'll use a combination of .jsonObject and .get(key):
+                // So our first task is to get the list "books" out from the rest of the response.
+                // To do this, we'll use a combination of .jsonObject and .get(key):
 
                 // Get the "results" json out of the response, as another JSONObject:
                 val resultsJSON : JSONObject = json.jsonObject.get("results") as JSONObject
@@ -91,8 +94,21 @@ class BestSellerBooksFragment : Fragment(), OnListFragmentInteractionListener {
                 // Get the "books" from those results, as a String
                 val booksRawJSON : String = resultsJSON.get("books").toString()
 
-                val models : List<BestSellerBook>? = null // Fix me!
-                recyclerView.adapter = models?.let { BestSellerBooksRecyclerViewAdapter(it, this@BestSellerBooksFragment) }
+                // create a Gson object
+                val gson = Gson()
+
+                // Gson.fromJson() requires two things: a raw JSON input, and the type it should
+                // convert to. Since our "books" result is a list of books, we'll tell gson to treat
+                // it as a List of BestSellerBook objects:
+                val arrayBookType = object : TypeToken<List<BestSellerBook>>() {}.type
+
+                // Call fromJson using your gson object, json "books" string, and arrayBookType.
+                // Save the results to models
+                // Gson will find the JSON keys that match the @SerializedName tags in our model class,
+                // and fill that data into model objects.
+                val models : List<BestSellerBook> = gson.fromJson(booksRawJSON, arrayBookType)
+
+                recyclerView.adapter = BestSellerBooksRecyclerViewAdapter(models, this@BestSellerBooksFragment)
 
                 // Look for this in Logcat:
                 Log.d("BestSellerBooksFragment", "response successful")
