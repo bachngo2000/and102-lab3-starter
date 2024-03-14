@@ -11,6 +11,7 @@ import com.codepath.bestsellerlistapp.R.id
  * [RecyclerView.Adapter] that can display a [BestSellerBook] and makes a call to the
  * specified [OnListFragmentInteractionListener].
  */
+// the adapter for the RecyclerView, responsible for connecting the Views with the models
 class BestSellerBooksRecyclerViewAdapter(
     private val books: List<BestSellerBook>,
     private val mListener: OnListFragmentInteractionListener?
